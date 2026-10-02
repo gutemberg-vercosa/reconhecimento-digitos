@@ -54,11 +54,11 @@ h1 { margin: 0; font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; }
 
 /* Área de desenho */
 
-.quadro { position: relative; width: min(100%, 320px); margin: 0 auto; }
+.quadro { position: relative; }
 #quadro {
   display: block;
   width: 100%;
-  aspect-ratio: 1;
+  aspect-ratio: 2;
   border: 2px dashed var(--linha);
   border-radius: 16px;
   touch-action: none; /* o dedo desenha em vez de rolar a página */
@@ -70,19 +70,26 @@ h1 { margin: 0; font-size: 2rem; line-height: 1.1; letter-spacing: -.03em; }
   display: grid;
   place-items: center;
   margin: 0;
+  padding: 0 24px;
   color: var(--muted);
+  font-size: .9rem;
+  text-align: center;
   pointer-events: none;
 }
 
 /* Resultado */
 
-.resultado { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 20px 0 12px; }
-.digito { display: block; font-size: 3.6rem; line-height: 1; letter-spacing: -.03em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.resultado { margin: 20px 0 12px; text-align: center; }
+.numero { display: block; font-size: 3.6rem; line-height: 1; letter-spacing: .02em; color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .confianca { color: var(--muted); font-size: .9rem; }
 
-.visao { margin: 0; text-align: center; }
-.visao canvas { width: 84px; height: 84px; border-radius: 8px; background: #000; image-rendering: pixelated; }
-.visao figcaption { color: var(--muted); font-size: .75rem; }
+/* Um botão por dígito, com o que a rede vê */
+.digitos { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 16px; }
+.digitos:empty { display: none; }
+.digitos button { display: grid; justify-items: center; gap: 4px; padding: 6px; border-radius: 12px; border: 2px solid transparent; font-size: .8rem; color: var(--muted); }
+.digitos [aria-checked="true"] { border-color: var(--accent); }
+.digitos canvas { width: 56px; height: 56px; border-radius: 8px; background: #000; image-rendering: pixelated; }
+.digitos b { color: var(--text); }
 
 .barras { display: grid; gap: 4px; margin: 0 0 20px; padding: 0; list-style: none; }
 .barras li { display: grid; grid-template-columns: 1.2em 1fr 3em; align-items: center; gap: 8px; font-size: .85rem; font-variant-numeric: tabular-nums; }

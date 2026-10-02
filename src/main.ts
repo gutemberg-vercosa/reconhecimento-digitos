@@ -1,4 +1,4 @@
-import { LADO, preparar } from './preparo';
+import { LADO, separar } from './preparo';
 import { lerRede, prever, type Rede } from './rede';
 
 interface Metricas { acuracia: number; imagensTeste: number; confusao: number[][] }
@@ -6,8 +6,8 @@ interface Metricas { acuracia: number; imagensTeste: number; confusao: number[][
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const quadro = $<HTMLCanvasElement>('quadro');
 const ctx = quadro.getContext('2d', { willReadFrequently: true })!;
-const visao = $<HTMLCanvasElement>('visao').getContext('2d')!;
-const TRACO = quadro.width / 14; // grossura parecida com a dos dígitos do MNIST
+const digitosEl = $('digitos');
+const TRACO = quadro.height / 14; // grossura parecida com a dos dígitos do MNIST
 
 const barras = Array.from({ length: 10 }, (_, d) => {
   const li = document.createElement('li');
@@ -18,6 +18,7 @@ const barras = Array.from({ length: 10 }, (_, d) => {
 
 let rede: Rede | null = null;
 let agendado = false;
+let selecionado = 0; // dígito do número cujas probabilidades aparecem nas barras
 
 function tinta() {
   // O traço é desenhado sobre fundo transparente; a opacidade de cada pixel é a intensidade.
@@ -27,30 +28,56 @@ function tinta() {
   return t;
 }
 
-function mostrarVisao(img: Float32Array | null) {
-  const dados = visao.createImageData(LADO, LADO);
-  img?.forEach((v, i) => {
+/** Miniatura 28x28 do que a rede recebe: dígito branco sobre preto, como no MNIST. */
+function miniatura(img: Float32Array) {
+  const c = document.createElement('canvas');
+  c.width = c.height = LADO;
+  const g = c.getContext('2d')!;
+  const dados = g.createImageData(LADO, LADO);
+  img.forEach((v, i) => {
     dados.data.fill(255, i * 4, i * 4 + 3);
     dados.data[i * 4 + 3] = v * 255;
   });
-  visao.putImageData(dados, 0, 0);
+  g.putImageData(dados, 0, 0);
+  return c;
 }
+
+const pct = (v: number) => `${Math.round(v * 100)}%`;
 
 function reconhecer() {
   agendado = false;
-  const img = preparar(tinta(), quadro.width);
-  mostrarVisao(img);
-  $('dica').hidden = !!img;
-  const p = img && rede ? prever(rede, img) : null;
-  const melhor = p ? p.indexOf(Math.max(...p)) : -1;
+  const imgs = separar(tinta(), quadro.width, quadro.height);
+  $('dica').hidden = imgs.length > 0;
+  const resultados = rede ? imgs.map((img) => prever(rede!, img)) : [];
+  const lidos = resultados.map((p) => p.indexOf(Math.max(...p)));
+  selecionado = Math.min(selecionado, Math.max(0, lidos.length - 1));
 
-  $('digito').textContent = p ? String(melhor) : '–';
-  $('confianca').textContent = p ? `${Math.round(p[melhor] * 100)}% de confiança` : rede ? 'Aguardando o desenho' : 'Carregando a rede…';
+  $('numero').textContent = lidos.length ? lidos.join('') : '–';
+  $('confianca').textContent = !rede
+    ? 'Carregando a rede…'
+    : !lidos.length
+      ? 'Aguardando o desenho'
+      : lidos.length === 1
+        ? `${pct(resultados[0][lidos[0]])} de confiança`
+        : `${lidos.length} dígitos. Toque em um para ver as probabilidades.`;
+
+  digitosEl.replaceChildren(...lidos.map((d, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-checked', String(i === selecionado));
+    b.setAttribute('aria-label', `Dígito ${i + 1}: ${d}, ${pct(resultados[i][d])}`);
+    b.append(miniatura(imgs[i]));
+    b.insertAdjacentHTML('beforeend', `<span><b>${d}</b> ${pct(resultados[i][d])}</span>`);
+    b.addEventListener('click', () => { selecionado = i; reconhecer(); });
+    return b;
+  }));
+
+  const p = resultados[selecionado];
   barras.forEach((li, d) => {
-    const v = p?.[d] ?? 0;
-    li.classList.toggle('melhor', d === melhor);
-    li.querySelector('i')!.style.width = `${v * 100}%`;
-    li.querySelector('small')!.textContent = p ? `${Math.round(v * 100)}%` : '';
+    li.classList.toggle('melhor', d === lidos[selecionado]);
+    li.querySelector('i')!.style.width = `${(p?.[d] ?? 0) * 100}%`;
+    li.querySelector('small')!.textContent = p ? pct(p[d]) : '';
   });
 }
 
@@ -85,6 +112,7 @@ quadro.addEventListener('pointermove', (e) => {
 
 $('limpar').addEventListener('click', () => {
   ctx.clearRect(0, 0, quadro.width, quadro.height);
+  selecionado = 0;
   reconhecer();
 });
 
@@ -93,8 +121,7 @@ ctx.lineCap = ctx.lineJoin = 'round';
 reconhecer();
 
 function mostrarMetricas({ acuracia, imagensTeste, confusao }: Metricas) {
-  const pct = (v: number) => `${(v * 100).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
-  $('acuracia').textContent = pct(acuracia);
+  $('acuracia').textContent = `${(acuracia * 100).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
   $('teste').textContent = imagensTeste.toLocaleString('pt-BR');
   const erros = confusao
     .flatMap((linha, real) => linha.map((n, lido) => ({ real, lido, n })))

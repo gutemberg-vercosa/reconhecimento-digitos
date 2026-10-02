@@ -1,16 +1,15 @@
 # Reconhecimento de Dígitos
 
-Desenhe um número de 0 a 9 e uma rede neural tenta reconhecê-lo. A rede foi escrita e treinada do zero em Python só com NumPy, no conjunto MNIST, e roda direto no navegador.
+Desenhe um número e uma rede neural tenta reconhecer cada dígito. A rede foi escrita e treinada do zero em Python só com NumPy, no conjunto MNIST, e roda direto no navegador.
 
 **Acesse:** https://gutemberg-vercosa.github.io/reconhecimento-digitos/
 
-<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="320" alt="Um 3 desenhado na tela, reconhecido com 100% de confiança, ao lado da imagem 28x28 que a rede recebe"></a>
+<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="320" alt="O número 44 desenhado na tela e reconhecido, com a imagem 28x28 que a rede recebe de cada dígito"></a>
 
 ## O que ele faz
 
-- Reconhece o dígito enquanto você desenha, com mouse, dedo ou caneta.
-- Mostra a probabilidade de cada um dos 10 dígitos.
-- Mostra a imagem 28x28 que a rede realmente recebe depois do preparo do desenho.
+- Reconhece números de um ou mais dígitos enquanto você desenha, com mouse, dedo ou caneta.
+- Mostra, para cada dígito, a imagem 28x28 que a rede realmente recebe e a probabilidade de cada um dos 10 dígitos.
 - Mostra a acurácia no conjunto de teste e as confusões mais comuns da rede.
 - Funciona no celular, com tema claro e escuro automático, e nada é enviado para servidor.
 
@@ -29,7 +28,8 @@ Desenhe um número de 0 a 9 e uma rede neural tenta reconhecê-lo. A rede foi es
 
 **Site (TypeScript)**
 
-- O desenho é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.
+- O desenho é separado em dígitos pelos grupos de traços que não se tocam (componentes conectados), em ordem da esquerda para a direita. Traços soltos na mesma coluna, como o corte de um 5, contam como um dígito só; dígitos encostados são lidos como um.
+- Cada dígito é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.
 - A rede é recalculada em TypeScript a partir dos pesos exportados.
 
 **Testes**
@@ -51,7 +51,7 @@ Desenhe um número de 0 a 9 e uma rede neural tenta reconhecê-lo. A rede foi es
 | `treino/rede.py` | Rede, gradientes e otimizador Adam |
 | `treino/treinar.py` | Baixa o MNIST, treina e exporta pesos, métricas e amostras de conferência |
 | `src/rede.ts` | Lê os pesos e calcula as probabilidades |
-| `src/preparo.ts` | Converte o desenho para o formato do MNIST |
+| `src/preparo.ts` | Separa o desenho em dígitos e converte cada um para o formato do MNIST |
 | `src/main.ts` | Interface: desenho, resultado e métricas |
 
 ## Rodando localmente
