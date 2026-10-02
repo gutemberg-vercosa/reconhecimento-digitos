@@ -15,42 +15,47 @@
       <p class="sub">Desenhe um número. Uma rede neural treinada do zero tenta reconhecer cada dígito.</p>
     </header>
 
-    <section class="painel">
-      <div class="quadro">
-        <canvas id="quadro" width="560" height="280" aria-label="Área de desenho"></canvas>
-        <p class="dica" id="dica">Desenhe aqui. Para um número, deixe um espaço entre os dígitos.</p>
-      </div>
+    <div class="layout">
+      <section class="painel desenho">
+        <div class="quadro">
+          <div class="tela">
+            <canvas id="quadro" width="560" height="280" aria-label="Área de desenho"></canvas>
+            <p class="dica" id="dica">Desenhe aqui. Para um número, deixe um espaço entre os dígitos.</p>
+          </div>
+        </div>
+        <button type="button" class="primario" id="limpar">Limpar</button>
+      </section>
 
-      <div class="resultado">
-        <strong class="numero" id="numero" aria-live="polite">–</strong>
-        <span class="confianca" id="confianca">Aguardando o desenho</span>
-      </div>
+      <aside class="lado">
+        <section class="painel">
+          <div class="resultado">
+            <strong class="numero" id="numero" aria-live="polite">–</strong>
+            <span class="confianca" id="confianca">Aguardando o desenho</span>
+          </div>
+          <div class="digitos" id="digitos" role="radiogroup" aria-label="O que a rede vê em cada dígito"></div>
+          <ol class="barras" id="barras" aria-label="Probabilidade de cada dígito"></ol>
+        </section>
 
-      <div class="digitos" id="digitos" role="radiogroup" aria-label="O que a rede vê em cada dígito"></div>
+        <section class="painel metricas" id="metricas" hidden>
+          <h2>Desempenho</h2>
+          <p><strong id="acuracia"></strong> de acerto em <span id="teste"></span> imagens que a rede não viu no treino.</p>
+          <h3>Confusões mais comuns</h3>
+          <ul id="confusoes"></ul>
+        </section>
 
-      <ol class="barras" id="barras" aria-label="Probabilidade de cada dígito"></ol>
-
-      <button type="button" class="primario" id="limpar">Limpar</button>
-    </section>
-
-    <section class="painel metricas" id="metricas" hidden>
-      <h2>Desempenho</h2>
-      <p><strong id="acuracia"></strong> de acerto em <span id="teste"></span> imagens que a rede não viu no treino.</p>
-      <h3>Confusões mais comuns</h3>
-      <ul id="confusoes"></ul>
-    </section>
-
-    <details class="ref">
-      <summary>Como funciona</summary>
-      <ul>
-        <li>A rede tem 784 entradas (uma por pixel de uma imagem 28x28), uma camada oculta de 128 neurônios com ReLU e 10 saídas com softmax, uma para cada dígito.</li>
-        <li>Ela foi treinada em Python só com NumPy, sem bibliotecas de aprendizado de máquina: a propagação, a retropropagação dos gradientes e o otimizador Adam foram escritos à mão.</li>
-        <li>O treino usou as 60 mil imagens do MNIST, deslocando cada lote alguns pixels para a rede tolerar dígitos fora do centro.</li>
-        <li>O desenho é separado em dígitos pelos grupos de traços que não se tocam; traços soltos na mesma coluna, como o corte de um 5, contam como um dígito só. Por isso dígitos encostados são lidos como um.</li>
-        <li>Cada dígito é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.</li>
-        <li>Os pesos treinados são carregados pelo site, e o cálculo roda inteiro no seu navegador. Nada é enviado para servidor.</li>
-      </ul>
-    </details>
+        <details class="ref">
+          <summary>Como funciona</summary>
+          <ul>
+            <li>A rede tem 784 entradas (uma por pixel de uma imagem 28x28), uma camada oculta de 128 neurônios com ReLU e 10 saídas com softmax, uma para cada dígito.</li>
+            <li>Ela foi treinada em Python só com NumPy, sem bibliotecas de aprendizado de máquina: a propagação, a retropropagação dos gradientes e o otimizador Adam foram escritos à mão.</li>
+            <li>O treino usou as 60 mil imagens do MNIST, deslocando cada lote alguns pixels para a rede tolerar dígitos fora do centro.</li>
+            <li>O desenho é separado em dígitos pelos grupos de traços que não se tocam; traços soltos na mesma coluna, como o corte de um 5, contam como um dígito só. Por isso dígitos encostados são lidos como um.</li>
+            <li>Cada dígito é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.</li>
+            <li>Os pesos treinados são carregados pelo site, e o cálculo roda inteiro no seu navegador. Nada é enviado para servidor.</li>
+          </ul>
+        </details>
+      </aside>
+    </div>
   </main>
 
   <script type="module" src="/src/main.ts"></script>

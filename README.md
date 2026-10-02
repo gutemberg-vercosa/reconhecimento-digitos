@@ -4,7 +4,7 @@ Desenhe um número e uma rede neural tenta reconhecer cada dígito. A rede foi e
 
 **Acesse:** https://gutemberg-vercosa.github.io/reconhecimento-digitos/
 
-<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="320" alt="O número 44 desenhado na tela e reconhecido, com a imagem 28x28 que a rede recebe de cada dígito"></a>
+<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="640" alt="O número 2026 desenhado no quadro e reconhecido, com a imagem 28x28 que a rede recebe de cada dígito, as probabilidades e o desempenho ao lado"></a>
 
 ## O que ele faz
 

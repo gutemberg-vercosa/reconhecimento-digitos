@@ -47,8 +47,7 @@ const pct = (v: number) => `${Math.round(v * 100)}%`;
 function reconhecer() {
   agendado = false;
   const imgs = separar(tinta(), quadro.width, quadro.height);
-  $('dica').hidden = imgs.length > 0;
-  const resultados = rede ? imgs.map((img) => prever(rede!, img)) : [];
+  $('dica').hidden = imgs.length > 0;  const resultados = rede ? imgs.map((img) => prever(rede!, img)) : [];
   const lidos = resultados.map((p) => p.indexOf(Math.max(...p)));
   selecionado = Math.min(selecionado, Math.max(0, lidos.length - 1));
 
@@ -59,7 +58,7 @@ function reconhecer() {
       ? 'Aguardando o desenho'
       : lidos.length === 1
         ? `${pct(resultados[0][lidos[0]])} de confiança`
-        : `${lidos.length} dígitos. Toque em um para ver as probabilidades.`;
+        : 'Toque num dígito para ver as probabilidades';
 
   digitosEl.replaceChildren(...lidos.map((d, i) => {
     const b = document.createElement('button');
@@ -116,9 +115,16 @@ $('limpar').addEventListener('click', () => {
   reconhecer();
 });
 
-ctx.lineWidth = TRACO;
-ctx.lineCap = ctx.lineJoin = 'round';
-reconhecer();
+// O quadro acompanha a forma do espaço disponível. A altura interna é fixa, para a
+// grossura do traço continuar proporcional ao tamanho dos dígitos.
+function ajustarQuadro() {
+  const largura = Math.round((quadro.height * quadro.clientWidth) / quadro.clientHeight);
+  if (largura && largura !== quadro.width) quadro.width = largura; // redimensionar apaga o desenho
+  ctx.lineWidth = TRACO;
+  ctx.lineCap = ctx.lineJoin = 'round';
+  reconhecer();
+}
+new ResizeObserver(ajustarQuadro).observe(quadro);
 
 function mostrarMetricas({ acuracia, imagensTeste, confusao }: Metricas) {
   $('acuracia').textContent = `${(acuracia * 100).toLocaleString('pt-BR', { maximumFractionDigits: 2 })}%`;
