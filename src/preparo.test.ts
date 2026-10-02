@@ -26,7 +26,7 @@ describe('separar', () => {
   });
 
   it('ajusta o dígito a 20 pixels de altura e o centraliza', () => {
-    const [img] = separar(quadro([5, 5, 13, 45]), L, A);
+    const [[img]] = separar(quadro([5, 5, 13, 45]), L, A);
     expect(linhasComTinta(img)).toBe(20);
     const [x, y] = centroDeMassa(img);
     expect(Math.abs(x - 13.5)).toBeLessThanOrEqual(0.5);
@@ -36,7 +36,7 @@ describe('separar', () => {
 
   it('separa traços lado a lado, da esquerda para a direita', () => {
     // Um traço alto à direita e um baixo à esquerda: a ordem segue o eixo x.
-    const imgs = separar(quadro([150, 10, 160, 90], [20, 50, 60, 90]), L, A);
+    const [imgs] = separar(quadro([150, 10, 160, 90], [20, 50, 60, 90]), L, A);
     expect(imgs).toHaveLength(2);
     const largura = (img: Float32Array) => new Set([...img.keys()].filter((i) => img[i]).map((i) => i % LADO)).size;
     expect(largura(imgs[0])).toBe(20); // o retângulo largo ocupa os 20 pixels na horizontal
@@ -44,11 +44,17 @@ describe('separar', () => {
 
   it('junta traços soltos na mesma coluna num só dígito', () => {
     // Como o corte de cima de um 5, que não encosta no resto.
-    expect(separar(quadro([40, 10, 80, 18], [40, 25, 80, 90]), L, A)).toHaveLength(1);
+    expect(separar(quadro([40, 10, 80, 18], [40, 25, 80, 90]), L, A).flat()).toHaveLength(1);
   });
 
   it('ignora pontos soltos pequenos demais para serem dígitos', () => {
-    expect(separar(quadro([10, 10, 60, 90], [150, 50, 155, 55]), L, A)).toHaveLength(1);
+    expect(separar(quadro([10, 10, 60, 90], [150, 50, 155, 55]), L, A).flat()).toHaveLength(1);
+  });
+
+  it('lê um dígito logo abaixo de outro como outra linha, não como o mesmo dígito', () => {
+    // Duas linhas de dois dígitos; os de baixo ficam na mesma coluna dos de cima.
+    const linhas = separar(quadro([20, 5, 40, 40], [80, 5, 100, 40], [20, 55, 40, 95], [80, 55, 100, 95]), L, A);
+    expect(linhas.map((l) => l.length)).toEqual([2, 2]);
   });
 });
 

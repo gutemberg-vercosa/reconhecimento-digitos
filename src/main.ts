@@ -46,12 +46,17 @@ const pct = (v: number) => `${Math.round(v * 100)}%`;
 
 function reconhecer() {
   agendado = false;
-  const imgs = separar(tinta(), quadro.width, quadro.height);
-  $('dica').hidden = imgs.length > 0;  const resultados = rede ? imgs.map((img) => prever(rede!, img)) : [];
+  const linhas = separar(tinta(), quadro.width, quadro.height, TRACO);
+  const imgs = linhas.flat();
+  $('dica').hidden = imgs.length > 0;
+  const resultados = rede ? imgs.map((img) => prever(rede!, img)) : [];
   const lidos = resultados.map((p) => p.indexOf(Math.max(...p)));
   selecionado = Math.min(selecionado, Math.max(0, lidos.length - 1));
 
-  $('numero').textContent = lidos.length ? lidos.join('') : '–';
+  // Uma linha do resultado para cada linha do desenho.
+  const inicioDaLinha = linhas.map((_, l) => linhas.slice(0, l).flat().length);
+  const porLinha = <T>(itens: T[]) => linhas.map((l, n) => itens.slice(inicioDaLinha[n], inicioDaLinha[n] + l.length));
+  $('numero').textContent = lidos.length && rede ? porLinha(lidos).map((l) => l.join('')).join(' · ') : '–';
   $('confianca').textContent = !rede
     ? 'Carregando a rede…'
     : !lidos.length
@@ -60,7 +65,7 @@ function reconhecer() {
         ? `${pct(resultados[0][lidos[0]])} de confiança`
         : 'Toque num dígito para ver as probabilidades';
 
-  digitosEl.replaceChildren(...lidos.map((d, i) => {
+  const botoes = lidos.map((d, i) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.setAttribute('role', 'radio');
@@ -70,7 +75,9 @@ function reconhecer() {
     b.insertAdjacentHTML('beforeend', `<span><b>${d}</b> ${pct(resultados[i][d])}</span>`);
     b.addEventListener('click', () => { selecionado = i; reconhecer(); });
     return b;
-  }));
+  });
+  // Entre as linhas do desenho, um separador.
+  digitosEl.replaceChildren(...porLinha(botoes).flatMap((l, n) => (n ? [document.createElement('hr'), ...l] : l)));
 
   const p = resultados[selecionado];
   barras.forEach((li, d) => {

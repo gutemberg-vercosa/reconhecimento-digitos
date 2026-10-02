@@ -4,11 +4,11 @@ Desenhe um número e uma rede neural tenta reconhecer cada dígito. A rede foi e
 
 **Acesse:** https://gutemberg-vercosa.github.io/reconhecimento-digitos/
 
-<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="640" alt="O número 2026 desenhado no quadro e reconhecido, com a imagem 28x28 que a rede recebe de cada dígito, as probabilidades e o desempenho ao lado"></a>
+<a href="https://gutemberg-vercosa.github.io/reconhecimento-digitos/"><img src="docs/preview.png" width="640" alt="Três linhas de números desenhadas no quadro e reconhecidas, com a imagem 28x28 que a rede recebe de cada dígito, as probabilidades e o desempenho ao lado"></a>
 
 ## O que ele faz
 
-- Reconhece números de um ou mais dígitos enquanto você desenha, com mouse, dedo ou caneta.
+- Reconhece números de um ou mais dígitos, em uma ou mais linhas, enquanto você desenha, com mouse, dedo ou caneta.
 - Mostra, para cada dígito, a imagem 28x28 que a rede realmente recebe e a probabilidade de cada um dos 10 dígitos.
 - Mostra a acurácia no conjunto de teste e as confusões mais comuns da rede.
 - Funciona no celular, com tema claro e escuro automático, e nada é enviado para servidor.
@@ -28,7 +28,8 @@ Desenhe um número e uma rede neural tenta reconhecer cada dígito. A rede foi e
 
 **Site (TypeScript)**
 
-- O desenho é separado em dígitos pelos grupos de traços que não se tocam (componentes conectados), em ordem da esquerda para a direita. Traços soltos na mesma coluna, como o corte de um 5, contam como um dígito só; dígitos encostados são lidos como um.
+- O desenho é separado em dígitos pelos grupos de traços que não se tocam (componentes conectados), agrupados em linhas lidas de cima para baixo e, em cada linha, da esquerda para a direita. Traços soltos e quase encostados na mesma coluna, como o corte de um 5, contam como um dígito só; dígitos encostados são lidos como um.
+- Dígitos pequenos têm o traço afinado por erosão, para ficar na mesma proporção dos dígitos do MNIST.
 - Cada dígito é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.
 - A rede é recalculada em TypeScript a partir dos pesos exportados.
 

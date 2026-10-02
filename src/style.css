@@ -80,7 +80,9 @@ h1 { margin: 0; font-size: clamp(1.4rem, 6.4vw, 2.2rem); line-height: 1.1; lette
   pointer-events: none;
 }
 
-.primario { display: block; width: 100%; margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--accent); color: #fff; font-weight: 600; }
+.acoes { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; color: var(--muted); font-size: .8rem; }
+.limpar { flex: none; padding: 6px 16px; border-radius: 999px; background: var(--suave); color: var(--accent); font-size: .9rem; font-weight: 600; }
+.limpar:hover { background: color-mix(in srgb, var(--accent) 15%, transparent); }
 
 /* Resultado */
 
@@ -90,6 +92,7 @@ h1 { margin: 0; font-size: clamp(1.4rem, 6.4vw, 2.2rem); line-height: 1.1; lette
 
 /* Um botão por dígito, com o que a rede vê */
 .digitos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.digitos hr { width: 1px; margin: 4px 0; border: 0; background: var(--linha); }
 .digitos:empty { display: none; }
 .digitos button { display: grid; justify-items: center; gap: 2px; padding: 4px; border-radius: 12px; border: 2px solid transparent; font-size: .8rem; color: var(--muted); }
 .digitos [aria-checked="true"] { border-color: var(--accent); }
@@ -132,7 +135,6 @@ h1 { margin: 0; font-size: clamp(1.4rem, 6.4vw, 2.2rem); line-height: 1.1; lette
   .desenho { display: flex; flex-direction: column; min-height: 0; }
   .quadro, .tela { flex: 1; min-height: 0; display: flex; }
   #quadro { aspect-ratio: auto; height: 100%; }
-  .primario { margin-top: 16px; }
   /* Se a janela for baixa demais, só a coluna da direita rola. */
   .lado { min-height: 0; overflow-y: auto; }
 }
@@ -145,6 +147,8 @@ h1 { margin: 0; font-size: clamp(1.4rem, 6.4vw, 2.2rem); line-height: 1.1; lette
   .lado, .layout { gap: 12px; }
   .numero { font-size: 2.2rem; }
   .resultado, .digitos { margin-bottom: 8px; }
-  .digitos canvas { width: 40px; height: 40px; }
+  .digitos { gap: 4px; }
+  .digitos button { padding: 2px; font-size: .7rem; }
+  .digitos canvas { width: 34px; height: 34px; }
   .metricas h3 { margin-top: 6px; }
 }

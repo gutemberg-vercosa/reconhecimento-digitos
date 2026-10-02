@@ -20,10 +20,13 @@
         <div class="quadro">
           <div class="tela">
             <canvas id="quadro" width="560" height="280" aria-label="Área de desenho"></canvas>
-            <p class="dica" id="dica">Desenhe aqui. Para um número, deixe um espaço entre os dígitos.</p>
+            <p class="dica" id="dica">Desenhe aqui</p>
           </div>
         </div>
-        <button type="button" class="primario" id="limpar">Limpar</button>
+        <div class="acoes">
+          <span>Para mais de um número, deixe um espaço entre os dígitos e entre as linhas.</span>
+          <button type="button" class="limpar" id="limpar">Limpar</button>
+        </div>
       </section>
 
       <aside class="lado">
@@ -49,7 +52,7 @@
             <li>A rede tem 784 entradas (uma por pixel de uma imagem 28x28), uma camada oculta de 128 neurônios com ReLU e 10 saídas com softmax, uma para cada dígito.</li>
             <li>Ela foi treinada em Python só com NumPy, sem bibliotecas de aprendizado de máquina: a propagação, a retropropagação dos gradientes e o otimizador Adam foram escritos à mão.</li>
             <li>O treino usou as 60 mil imagens do MNIST, deslocando cada lote alguns pixels para a rede tolerar dígitos fora do centro.</li>
-            <li>O desenho é separado em dígitos pelos grupos de traços que não se tocam; traços soltos na mesma coluna, como o corte de um 5, contam como um dígito só. Por isso dígitos encostados são lidos como um.</li>
+            <li>O desenho é separado em dígitos pelos grupos de traços que não se tocam; traços soltos e quase encostados na mesma coluna, como o corte de um 5, contam como um dígito só. Os dígitos são agrupados em linhas, lidas de cima para baixo. Dígitos encostados são lidos como um.</li>
             <li>Cada dígito é recortado, reduzido para caber em 20x20 e centralizado pelo centro de massa numa imagem 28x28, o mesmo preparo das imagens do MNIST.</li>
             <li>Os pesos treinados são carregados pelo site, e o cálculo roda inteiro no seu navegador. Nada é enviado para servidor.</li>
           </ul>
