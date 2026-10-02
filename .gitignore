@@ -1,0 +1,4 @@
+node_modules
+dist
+treino/dados
+__pycache__
