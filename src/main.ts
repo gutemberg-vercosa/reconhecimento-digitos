@@ -141,7 +141,7 @@ function mostrarMetricas({ acuracia, imagensTeste, confusao }: Metricas) {
     .filter((e) => e.real !== e.lido)
     .sort((a, b) => b.n - a.n)
     .slice(0, 3);
-  $('confusoes').innerHTML = erros.map((e) => `<li><b>${e.real}</b> lido como <b>${e.lido}</b>: ${e.n} vezes</li>`).join('');
+  $('confusoes').innerHTML = erros.map((e) => `<b>${e.real}</b> lido como <b>${e.lido}</b> (${e.n}x)`).join(', ');
   $('metricas').hidden = false;
 }
 

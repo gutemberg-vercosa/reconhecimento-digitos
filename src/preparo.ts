@@ -20,16 +20,19 @@ const sobreposicao = (a0: number, a1: number, b0: number, b1: number) => Math.mi
 export function separar(tinta: ArrayLike<number>, largura: number, altura: number, traco = 0): Float32Array[][] {
   const { rotulo, grupos } = rotular(tinta, largura, altura);
 
-  // Traços que não se tocam, mas estão na mesma coluna e quase encostados na vertical
-  // (o corte de um 5, um 4 feito em dois traços), são o mesmo dígito. Um dígito de
-  // outra linha, logo abaixo, fica mais longe e não entra.
+  // Traços que não se tocam, mas estão na mesma coluna, são o mesmo dígito quando se
+  // sobrepõem na vertical (um 4 feito em dois traços) ou quando um deles é pequeno e
+  // está quase encostado no outro (o corte de um 5). Dois dígitos inteiros, um em cima
+  // do outro, ficam separados, mesmo próximos.
   const pedacos = [...grupos];
   for (let i = 0; i < pedacos.length; i++) {
     for (let j = i + 1; j < pedacos.length; j++) {
       const a = pedacos[i], b = pedacos[j];
       const mesmaColuna = sobreposicao(a.x0, a.x1, b.x0, b.x1) >= Math.min(larg(a), larg(b)) / 2;
-      const perto = -sobreposicao(a.y0, a.y1, b.y0, b.y1) <= Math.max(alt(a), alt(b)) * 0.3;
-      if (!mesmaColuna || !perto) continue;
+      const vertical = sobreposicao(a.y0, a.y1, b.y0, b.y1);
+      const maior = Math.max(alt(a), alt(b));
+      const pedacoPequeno = Math.min(alt(a), alt(b)) < maior * 0.4 && -vertical <= maior * 0.3;
+      if (!mesmaColuna || (vertical <= 0 && !pedacoPequeno)) continue;
       a.x0 = Math.min(a.x0, b.x0); a.x1 = Math.max(a.x1, b.x1);
       a.y0 = Math.min(a.y0, b.y0); a.y1 = Math.max(a.y1, b.y1);
       b.rotulos.forEach((r) => a.rotulos.add(r));

@@ -56,7 +56,11 @@ describe('separar', () => {
     const linhas = separar(quadro([20, 5, 40, 40], [80, 5, 100, 40], [20, 55, 40, 95], [80, 55, 100, 95]), L, A);
     expect(linhas.map((l) => l.length)).toEqual([2, 2]);
   });
-});
+
+  it('separa dígitos empilhados mesmo quando as linhas estão bem próximas', () => {
+    const linhas = separar(quadro([20, 5, 40, 47], [20, 52, 40, 95]), L, A);
+    expect(linhas.map((l) => l.length)).toEqual([1, 1]);
+  });});
 
 describe('centralizar', () => {
   it('leva um ponto do canto para o meio', () => {
