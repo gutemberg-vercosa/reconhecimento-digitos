@@ -53,10 +53,10 @@ function reconhecer() {
   const lidos = resultados.map((p) => p.indexOf(Math.max(...p)));
   selecionado = Math.min(selecionado, Math.max(0, lidos.length - 1));
 
-  // Uma linha do resultado para cada linha do desenho.
-  const inicioDaLinha = linhas.map((_, l) => linhas.slice(0, l).flat().length);
-  const porLinha = <T>(itens: T[]) => linhas.map((l, n) => itens.slice(inicioDaLinha[n], inicioDaLinha[n] + l.length));
-  $('numero').textContent = lidos.length && rede ? porLinha(lidos).map((l) => l.join('')).join(' · ') : '–';
+  // Posição de cada dígito em `imgs`, agrupada pelas linhas do desenho.
+  let k = 0;
+  const indices = linhas.map((l) => l.map(() => k++));
+  $('numero').textContent = lidos.length ? indices.map((l) => l.map((i) => lidos[i]).join('')).join(' · ') : '–';
   $('confianca').textContent = !rede
     ? 'Carregando a rede…'
     : !lidos.length
@@ -77,7 +77,8 @@ function reconhecer() {
     return b;
   });
   // Entre as linhas do desenho, um separador.
-  digitosEl.replaceChildren(...porLinha(botoes).flatMap((l, n) => (n ? [document.createElement('hr'), ...l] : l)));
+  const separador = () => document.createElement('hr');
+  digitosEl.replaceChildren(...(lidos.length ? indices.flatMap((l, n) => [...(n ? [separador()] : []), ...l.map((i) => botoes[i])]) : []));
 
   const p = resultados[selecionado];
   barras.forEach((li, d) => {

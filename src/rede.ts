@@ -1,7 +1,7 @@
 // Mesma rede treinada em treino/rede.py: 784 -> 128 (ReLU) -> 10 (softmax).
-export const ENTRADAS = 784;
-export const OCULTOS = 128;
-export const SAIDAS = 10;
+const ENTRADAS = 784;
+const OCULTOS = 128;
+const SAIDAS = 10;
 
 export interface Rede {
   W1: Float32Array; // ENTRADAS x OCULTOS, linha por linha

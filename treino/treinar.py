@@ -68,11 +68,10 @@ def main():
     }))
     # Algumas imagens de teste com as probabilidades calculadas aqui, para os testes do
     # site conferirem que a inferência em TypeScript dá o mesmo resultado.
-    amostras = range(5)
     (RAIZ / 'src' / 'amostras.json').write_text(json.dumps([
         {'pixels': np.round(x_teste[i] * 255).astype(int).tolist(),
          'probabilidades': prever(p, x_teste[i:i + 1])[1][0].round(6).tolist()}
-        for i in amostras
+        for i in range(5)
     ]))
 
 

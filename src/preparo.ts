@@ -13,7 +13,7 @@ const sobreposicao = (a0: number, a1: number, b0: number, b1: number) => Math.mi
 
 /**
  * `tinta` é um quadro largura x altura com a intensidade de cada pixel (0 a 1).
- * 	raco é a grossura do pincel, usada para afinar os dígitos pequenos.
+ * `traco` é a grossura do pincel, usada para afinar os dígitos pequenos.
  * Devolve as linhas do desenho, de cima para baixo, e em cada uma as imagens 28x28
  * dos dígitos, da esquerda para a direita.
  */
